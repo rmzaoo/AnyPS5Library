@@ -1,0 +1,14 @@
+# Local toolchain and build output
+.dotnet/
+.build/
+AnyPS5 Library.app/
+pkg-to-anyps5/target/
+**/bin/
+**/obj/
+.DS_Store
+
+# Game descriptions copied from store pages are copyrighted text: keep them local, never commit them.
+src/AnyPS5Library/Metadata/pages.json
+
+# Local-only additions. Not published.
+src/AnyPS5Library/Local/

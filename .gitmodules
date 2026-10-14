@@ -1,0 +1,6 @@
+[submodule "upstream"]
+	path = upstream
+	url = https://github.com/pearlxcore/PS5PkgTool
+[submodule "pkg-to-anyps5"]
+	path = pkg-to-anyps5
+	url = https://github.com/awake-devel/pkg-to-anyps5

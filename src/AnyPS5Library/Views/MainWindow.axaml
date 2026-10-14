@@ -1,0 +1,482 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="AnyPS5Library.Views.MainWindow"
+        Title="AnyPS5 Library"
+        Icon="avares://AnyPS5Library/Assets/icon.png"
+        Width="1400" Height="860" MinWidth="980" MinHeight="600"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel>
+    <!-- Top bar -->
+    <Border DockPanel.Dock="Top" Padding="14,10" Background="#161A22">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <Image Source="avares://AnyPS5Library/Assets/icon.png" Width="28" Height="28" />
+          <StackPanel>
+            <TextBlock Text="AnyPS5 Library" FontWeight="SemiBold" FontSize="16" />
+            <TextBlock Name="txtHeaderStatus" Classes="muted" FontSize="11" Text="Ready" />
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+          <Button Name="btnAddFolder" Content="Add Library Folder…" />
+          <Button Name="btnOpenFile" Content="Open File…" />
+          <Button Name="btnScan" Content="Rescan" Classes="accent" />
+          <Button Name="btnCancelScan" Content="Stop" IsVisible="False" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <TabControl Name="tabsMain" Padding="8">
+      <!-- ============================== CATALOG -->
+      <TabItem Name="tabCatalog" Header="Catalog">
+        <Grid ColumnDefinitions="*,6,460">
+          <DockPanel>
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
+              <TextBox Name="txtCatSearch" Watermark="Search title, title ID, platform, genre, developer, publisher…" />
+              <StackPanel Grid.Column="1" Name="panelCatTools" Orientation="Horizontal" Spacing="12" Margin="12,0,0,0" />
+              <TextBlock Grid.Column="2" Name="txtCatCount" Classes="muted" Margin="12,0,4,0" VerticalAlignment="Center" />
+            </Grid>
+            <DataGrid Name="gridCatalog" SelectionMode="Single">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="2*" />
+                <DataGridTextColumn Header="Title ID" Binding="{Binding Id}" Width="100" />
+                <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" Width="80" />
+                <DataGridTextColumn Header="Genres" Binding="{Binding Genres}" Width="160" />
+                <DataGridTextColumn Header="Score" Binding="{Binding ScoreText}" SortMemberPath="Score" Width="64" />
+                <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="60" />
+                <DataGridTextColumn Header="Developer" Binding="{Binding Developer}" Width="*" />
+                <DataGridTextColumn Header="AnyPS5" Binding="{Binding AnyPs5}" SortMemberPath="AnyPs5Rank" Width="96" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+          <GridSplitter Grid.Column="1" ResizeDirection="Columns" Background="Transparent" />
+
+          <Border Grid.Column="2" Background="#141820" CornerRadius="8" Padding="12">
+            <DockPanel>
+              <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*" Margin="0,0,0,10">
+                <Border Width="96" Height="96" CornerRadius="6" ClipToBounds="True" Background="#0D1016">
+                  <Image Name="imgCatIcon" Stretch="UniformToFill" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="3">
+                  <TextBlock Name="txtCatTitle" Classes="h1" TextWrapping="Wrap" Text="No game selected" />
+                  <TextBlock Name="txtCatSub" Classes="muted" TextWrapping="Wrap" />
+                  <WrapPanel Name="panelCatButtons" Margin="0,6,0,0">
+                    <Button Name="btnCatShowLibrary" Content="Show in My Library" Margin="0,0,6,6" IsVisible="False" />
+                  </WrapPanel>
+                </StackPanel>
+              </Grid>
+              <ScrollViewer>
+                <StackPanel Spacing="10">
+                  <Border Name="borderCatHero" CornerRadius="6" ClipToBounds="True" Height="150" IsVisible="False" Background="#0D1016">
+                    <Grid>
+                      <Image Name="imgCatHero" Stretch="UniformToFill" />
+                      <Image Name="imgCatLogo" MaxHeight="70" MaxWidth="240" Margin="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                    </Grid>
+                  </Border>
+                  <TextBlock Name="txtCatMissing" Classes="muted" TextWrapping="Wrap" IsVisible="False" Text="Select a game." />
+                  <WrapPanel Name="panelCatChips" />
+                  <Grid Name="gridCatFacts" ColumnDefinitions="110,*" />
+                  <TextBlock Name="txtCatAbout" TextWrapping="Wrap" LineHeight="20" />
+                  <WrapPanel Name="panelCatShots" />
+                </StackPanel>
+              </ScrollViewer>
+            </DockPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <!-- ============================== MY LIBRARY -->
+      <TabItem Name="tabLibrary" Header="My Library">
+        <Grid ColumnDefinitions="*,6,460">
+          <DockPanel>
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+              <TextBox Name="txtSearch" Watermark="Search title, title ID, genre, developer, format, path…" />
+              <TextBlock Grid.Column="1" Name="txtLibraryCount" Classes="muted" Margin="12,0,4,0" VerticalAlignment="Center" />
+            </Grid>
+            <ProgressBar DockPanel.Dock="Bottom" Name="progressScan" IsVisible="False" Height="4" Margin="0,6,0,0" />
+            <DataGrid Name="gridLibrary" SelectionMode="Single">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="2*" />
+                <DataGridTextColumn Header="Title ID" Binding="{Binding TitleId}" Width="100" />
+                <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="80" />
+                <DataGridTextColumn Header="AnyPS5" Binding="{Binding AnyPs5}" SortMemberPath="AnyPs5Rank" Width="96" />
+                <DataGridTextColumn Header="Genres" Binding="{Binding Genres}" Width="140" />
+                <DataGridTextColumn Header="Score" Binding="{Binding ScoreText}" SortMemberPath="Score" Width="64" />
+                <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="60" />
+                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="80" />
+                <DataGridTextColumn Header="Format" Binding="{Binding Source}" Width="100" />
+                <DataGridTextColumn Header="Size" Binding="{Binding Size}" SortMemberPath="SizeBytes" Width="90" />
+                <DataGridTextColumn Header="FW" Binding="{Binding Firmware}" Width="80" />
+                <DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="2*" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+          <GridSplitter Grid.Column="1" ResizeDirection="Columns" Background="Transparent" />
+
+          <!-- Details -->
+          <Border Grid.Column="2" Background="#141820" CornerRadius="8" Padding="12">
+            <DockPanel>
+              <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*" Margin="0,0,0,10">
+                <Border Width="96" Height="96" CornerRadius="6" ClipToBounds="True" Background="#0D1016">
+                  <Image Name="imgIcon" Stretch="UniformToFill" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="3">
+                  <TextBlock Name="txtDetailTitle" Classes="h1" TextWrapping="Wrap" Text="No game selected" />
+                  <TextBlock Name="txtDetailSub" Classes="muted" TextWrapping="Wrap" />
+                  <WrapPanel Name="panelDetailButtons" Margin="0,6,0,0">
+                    <Button Name="btnDetailAnyPs5" Content="Export for AnyPS5" Classes="accent" Margin="0,0,6,6" IsEnabled="False" />
+                    <Button Name="btnDetailTools" Content="Open in Tools" Margin="0,0,6,6" IsEnabled="False" />
+                    <Button Name="btnDetailReveal" Content="Show in Finder" Margin="0,0,6,6" IsEnabled="False" />
+                  </WrapPanel>
+                </StackPanel>
+              </Grid>
+              <TabControl Name="tabsDetail">
+                <TabItem Header="Info">
+                  <ScrollViewer>
+                    <StackPanel Spacing="10">
+                      <Border Name="borderHero" CornerRadius="6" ClipToBounds="True" Height="150" IsVisible="False" Background="#0D1016">
+                        <Grid>
+                          <Image Name="imgHero" Stretch="UniformToFill" />
+                          <Image Name="imgLogo" MaxHeight="70" MaxWidth="240" Margin="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                        </Grid>
+                      </Border>
+                      <TextBlock Name="txtInfoMissing" Classes="muted" TextWrapping="Wrap" IsVisible="False"
+                                 Text="No catalog info for this title ID." />
+                      <WrapPanel Name="panelInfoChips" />
+                      <Grid Name="gridInfoFacts" ColumnDefinitions="110,*" />
+                      <TextBlock Name="txtInfoAbout" TextWrapping="Wrap" LineHeight="20" />
+                      <WrapPanel Name="panelShots" />
+                    </StackPanel>
+                  </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Overview">
+                  <DataGrid Name="gridOverview" HeadersVisibility="None">
+                    <DataGrid.Columns>
+                      <DataGridTextColumn Binding="{Binding Key}" Width="150" FontWeight="SemiBold" />
+                      <DataGridTextColumn Binding="{Binding Value}" Width="*" />
+                    </DataGrid.Columns>
+                  </DataGrid>
+                </TabItem>
+                <TabItem Header="Artwork">
+                  <ScrollViewer>
+                    <StackPanel Name="panelArtwork" Spacing="10" />
+                  </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Files">
+                  <DockPanel>
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                      <Button Name="btnExtractFile" Content="Extract Selected…" />
+                      <TextBlock Name="txtFilesInfo" Classes="muted" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBox DockPanel.Dock="Top" Name="txtFileFilter" Watermark="Filter files…" Margin="0,0,0,6" />
+                    <DataGrid Name="gridFiles" SelectionMode="Extended">
+                      <DataGrid.Columns>
+                        <DataGridTextColumn Header="Path" Binding="{Binding RelativePath}" Width="*" />
+                        <DataGridTextColumn Header="Size" Binding="{Binding Size}" SortMemberPath="SizeBytes" Width="90" />
+                      </DataGrid.Columns>
+                    </DataGrid>
+                  </DockPanel>
+                </TabItem>
+                <TabItem Header="Trophies">
+                  <DataGrid Name="gridTrophies">
+                    <DataGrid.Columns>
+                      <DataGridTextColumn Header="#" Binding="{Binding Id}" Width="44" />
+                      <DataGridTextColumn Header="Grade" Binding="{Binding Grade}" Width="70" />
+                      <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                      <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*" />
+                    </DataGrid.Columns>
+                  </DataGrid>
+                </TabItem>
+                <TabItem Header="Executable">
+                  <DataGrid Name="gridExecutable" HeadersVisibility="None">
+                    <DataGrid.Columns>
+                      <DataGridTextColumn Binding="{Binding Key}" Width="150" FontWeight="SemiBold" />
+                      <DataGridTextColumn Binding="{Binding Value}" Width="*" />
+                    </DataGrid.Columns>
+                  </DataGrid>
+                </TabItem>
+                <TabItem Header="Raw">
+                  <TextBox Name="txtRaw" IsReadOnly="True" AcceptsReturn="True" FontFamily="Menlo,Monaco,monospace" FontSize="11"
+                           TextWrapping="NoWrap" />
+                </TabItem>
+              </TabControl>
+            </DockPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <!-- ============================== COMPATIBILITY -->
+      <TabItem Name="tabCompat" Header="Compatibility">
+        <Grid ColumnDefinitions="*,6,460">
+          <DockPanel>
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto,Auto" Margin="0,0,0,8">
+              <TextBox Name="txtCompatSearch" Watermark="Search name, title ID, tag, engine, blocker…" />
+              <ComboBox Grid.Column="1" Name="cboCompatStage" Width="170" Margin="12,0,0,0" />
+              <CheckBox Grid.Column="2" Name="chkCompatOwned" Content="In my library" Margin="12,0,0,0" />
+              <Button Grid.Column="3" Name="btnCompatRefresh" Content="Refresh" Margin="12,0,0,0" />
+              <TextBlock Grid.Column="4" Name="txtCompatCount" Classes="muted" Margin="12,0,4,0" VerticalAlignment="Center" />
+            </Grid>
+            <TextBlock DockPanel.Dock="Bottom" Name="txtCompatSource" Classes="muted" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap" />
+            <DataGrid Name="gridCompat" SelectionMode="Single">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="2*" />
+                <DataGridTextColumn Header="Title IDs" Binding="{Binding TitleIds}" Width="150" />
+                <DataGridTextColumn Header="Stage" Binding="{Binding Stage}" SortMemberPath="StageRank" Width="96" />
+                <DataGridTextColumn Header="Claim" Binding="{Binding Claim}" Width="76" />
+                <DataGridTextColumn Header="Confidence" Binding="{Binding Confidence}" Width="130" />
+                <DataGridTextColumn Header="Stops at" Binding="{Binding StopsAt}" Width="3*" />
+                <DataGridTextColumn Header="Last activity" Binding="{Binding LastActivity}" Width="100" />
+                <DataGridTextColumn Header="Owned" Binding="{Binding OwnedText}" SortMemberPath="Owned" Width="64" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+          <GridSplitter Grid.Column="1" ResizeDirection="Columns" Background="Transparent" />
+
+          <Border Grid.Column="2" Background="#141820" CornerRadius="8" Padding="12">
+            <DockPanel>
+              <StackPanel DockPanel.Dock="Top" Spacing="3" Margin="0,0,0,10">
+                <Border Name="borderCompatImage" CornerRadius="6" ClipToBounds="True" Height="150" IsVisible="False" Background="#0D1016" Margin="0,0,0,8">
+                  <Image Name="imgCompat" Stretch="UniformToFill" />
+                </Border>
+                <TextBlock Name="txtCompatTitle" Classes="h1" TextWrapping="Wrap" Text="No game selected" />
+                <TextBlock Name="txtCompatSub" Classes="muted" TextWrapping="Wrap" />
+                <WrapPanel Margin="0,6,0,0">
+                  <Button Name="btnCompatOpenSite" Content="Open on Roadmap" Classes="accent" Margin="0,0,6,6" IsEnabled="False" />
+                  <Button Name="btnCompatStore" Content="Store Page" Margin="0,0,6,6" IsVisible="False" />
+                  <Button Name="btnCompatShowLibrary" Content="Show in My Library" Margin="0,0,6,6" IsVisible="False" />
+                </WrapPanel>
+              </StackPanel>
+              <ScrollViewer>
+                <StackPanel Name="panelCompatDetail" Spacing="10" />
+              </ScrollViewer>
+            </DockPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <!-- ============================== ANYPS5 -->
+      <TabItem Name="tabAnyPs5" Header="AnyPS5 Export">
+        <ScrollViewer>
+          <StackPanel MaxWidth="900" HorizontalAlignment="Left" Spacing="14" Margin="8">
+            <TextBlock Classes="h1" Text="Prepare a game for AnyPS5" />
+            <TextBlock Classes="muted" TextWrapping="Wrap"
+                       Text="Unpacks a debug package (FPKG), a dump folder, or an exFAT / FFPKG / FFPFSC image into the layout the AnyPS5 relinker expects: source/ (eboot.bin and modules unwrapped to ELF) and app0/ (every game file). If you set up the AnyPS5 relinker below, it then builds app.elf and copies AnyPS5's system libraries into libs/ automatically." />
+            <Grid ColumnDefinitions="140,*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+              <TextBlock Classes="label" Text="Source" />
+              <TextBox Grid.Column="1" Name="txtAnySource" Watermark="Debug .pkg, dump folder, or image" />
+              <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+                <Button Name="btnAnyFromLibrary" Content="Selected Game" />
+                <Button Name="btnAnyPickFile" Content="File…" />
+                <Button Name="btnAnyPickFolder" Content="Folder…" />
+              </StackPanel>
+              <TextBlock Grid.Row="1" Classes="label" Text="Output folder" />
+              <TextBox Grid.Row="1" Grid.Column="1" Name="txtAnyOutput" Watermark="Where source/, app0/, app.elf and libs/ go" />
+              <Button Grid.Row="1" Grid.Column="2" Name="btnAnyPickOutput" Content="Choose…" />
+              <TextBlock Grid.Row="2" Grid.Column="1" Name="txtAnyDetected" Classes="muted" />
+            </Grid>
+
+            <Border Background="#141820" CornerRadius="8" Padding="12">
+              <StackPanel Spacing="8">
+                <TextBlock Text="pkg-to-anyps5 options" FontWeight="SemiBold" />
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                  <CheckBox Name="chkAnyExecOnly" Content="Executables only (source/ only, seconds)" />
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock Classes="label" Text="Parallel jobs" />
+                    <NumericUpDown Name="nudAnyJobs" Minimum="1" Maximum="32" Value="4" Width="120" FormatString="0" />
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Background="#141820" CornerRadius="8" Padding="12">
+              <StackPanel Spacing="8">
+                <CheckBox Name="chkAnyRelink" Content="Run the AnyPS5 relinker afterwards (build app.elf + copy libs/)" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="140,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                  <TextBlock Classes="label" Text="Relinker" />
+                  <TextBox Grid.Column="1" Name="txtAnyRelinker" Watermark="~/AnyPS5/build/core/relinker/relinker" />
+                  <Button Grid.Column="2" Name="btnAnyPickRelinker" Content="Choose…" />
+                  <TextBlock Grid.Row="1" Classes="label" Text="System libs" />
+                  <TextBox Grid.Row="1" Grid.Column="1" Name="txtAnyLibs" Watermark="~/AnyPS5/build/core/libs/libs (folder with *.prx)" />
+                  <Button Grid.Row="1" Grid.Column="2" Name="btnAnyPickLibs" Content="Choose…" />
+                </Grid>
+                <TextBlock Name="txtAnyRelinkHint" Classes="muted" TextWrapping="Wrap" />
+              </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Button Name="btnAnyRun" Content="Export for AnyPS5" Classes="accent" Padding="18,8" />
+              <TextBlock Name="txtAnyStatus" Classes="muted" VerticalAlignment="Center" TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBlock Name="txtAnyTool" Classes="muted" FontSize="11" TextWrapping="Wrap" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- ============================== TOOLS -->
+      <TabItem Name="tabTools" Header="Image Tools">
+        <ScrollViewer>
+          <StackPanel MaxWidth="900" HorizontalAlignment="Left" Spacing="14" Margin="8">
+            <TextBlock Classes="h1" Text="Convert, extract, verify, and build" />
+            <Grid ColumnDefinitions="140,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+              <TextBlock Classes="label" Text="Source" />
+              <TextBox Grid.Column="1" Name="txtToolSource" Watermark="Dump folder, image, or debug .pkg" />
+              <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+                <Button Name="btnToolFromLibrary" Content="Selected Game" />
+                <Button Name="btnToolPickFile" Content="File…" />
+                <Button Name="btnToolPickFolder" Content="Folder…" />
+              </StackPanel>
+              <TextBlock Grid.Row="1" Grid.Column="1" Name="txtToolDetected" Classes="muted" Text="Detected: -" />
+
+              <TextBlock Grid.Row="2" Classes="label" Text="Action" />
+              <ComboBox Grid.Row="2" Grid.Column="1" Name="cboToolAction" HorizontalAlignment="Stretch" />
+
+              <TextBlock Grid.Row="3" Classes="label" Text="Target" Name="lblToolTarget" />
+              <ComboBox Grid.Row="3" Grid.Column="1" Name="cboToolTarget" HorizontalAlignment="Stretch" />
+
+              <TextBlock Grid.Row="4" Classes="label" Text="Output" Name="lblToolOutput" />
+              <TextBox Grid.Row="4" Grid.Column="1" Name="txtToolOutput" />
+              <Button Grid.Row="4" Grid.Column="2" Name="btnToolPickOutput" Content="Choose…" />
+
+              <TextBlock Grid.Row="5" Classes="label" Text="Passcode" Name="lblToolPasscode" />
+              <TextBox Grid.Row="5" Grid.Column="1" Name="txtToolPasscode" FontFamily="Menlo,Monaco,monospace" />
+            </Grid>
+
+            <Border Name="panelToolOptions" Background="#141820" CornerRadius="8" Padding="12">
+              <StackPanel Spacing="8">
+                <TextBlock Text="Options" FontWeight="SemiBold" />
+                <CheckBox Name="chkToolOverwrite" Content="Overwrite an existing output file" />
+                <StackPanel Name="panelExfatOpts" Orientation="Horizontal" Spacing="16">
+                  <CheckBox Name="chkToolAmpr" Content="Generate AMPR index (exFAT)" IsChecked="True" />
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock Classes="label" Text="Cluster" />
+                    <ComboBox Name="cboToolCluster" SelectedIndex="0" Width="120">
+                      <ComboBoxItem Content="Auto" />
+                      <ComboBoxItem Content="32 KB" />
+                      <ComboBoxItem Content="64 KB" />
+                    </ComboBox>
+                  </StackPanel>
+                </StackPanel>
+                <StackPanel Name="panelPfscOpts" Orientation="Horizontal" Spacing="16">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock Classes="label" Text="PFSC level" />
+                    <NumericUpDown Name="nudToolLevel" Minimum="1" Maximum="9" Value="6" Width="110" FormatString="0" />
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock Classes="label" Text="Min gain %" />
+                    <NumericUpDown Name="nudToolGain" Minimum="0" Maximum="50" Value="2" Width="110" FormatString="0" />
+                  </StackPanel>
+                </StackPanel>
+                <StackPanel Name="panelPkgOpts" Spacing="8">
+                  <StackPanel Orientation="Horizontal" Spacing="16">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                      <TextBlock Classes="label" Text="Inner compression" />
+                      <ComboBox Name="cboToolCompression" SelectedIndex="0" Width="200">
+                        <ComboBoxItem Content="Auto (Kraken where it helps)" />
+                        <ComboBoxItem Content="Kraken (forced)" />
+                        <ComboBoxItem Content="Uncompressed" />
+                      </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                      <TextBlock Classes="label" Text="PlayGo chunks" />
+                      <NumericUpDown Name="nudToolPlayGo" Minimum="1" Maximum="64" Value="1" Width="110" FormatString="0" />
+                    </StackPanel>
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Spacing="16">
+                    <CheckBox Name="chkToolFakeSign" Content="Fake-sign modules" IsChecked="True" />
+                    <CheckBox Name="chkToolRightSprx" Content="Inject right.sprx" IsChecked="True" />
+                    <CheckBox Name="chkToolDeterministic" Content="Reproducible output" />
+                  </StackPanel>
+                  <TextBlock Name="txtToolContentId" Classes="muted" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Button Name="btnToolRun" Content="Queue" Classes="accent" Padding="18,8" />
+              <TextBlock Name="txtToolStatus" Classes="muted" VerticalAlignment="Center" TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBlock Classes="muted" FontSize="11" TextWrapping="Wrap"
+                       Text="Package builds use the ProsperoPkgTool engine. The Windows-only LibProsperoPkg builder (Sony libScePubTools, native Win32 code) is not available on macOS." />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- ============================== TASKS -->
+      <TabItem Name="tabTasks" Header="Tasks">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            <CheckBox Name="chkAutoStart" Content="Auto-start" IsChecked="True" />
+            <Button Name="btnTaskStart" Content="Start Next" />
+            <Button Name="btnTaskCancel" Content="Cancel" />
+            <Button Name="btnTaskRetry" Content="Retry" />
+            <Button Name="btnTaskRemove" Content="Remove" />
+            <Button Name="btnTaskClear" Content="Clear Finished" />
+            <Button Name="btnTaskReveal" Content="Show Output" />
+            <TextBlock Name="txtTaskSummary" Classes="muted" VerticalAlignment="Center" Margin="10,0,0,0" />
+          </StackPanel>
+          <TextBox DockPanel.Dock="Bottom" Name="txtTaskDetail" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                   Height="120" Margin="0,8,0,0" FontFamily="Menlo,Monaco,monospace" FontSize="11" />
+          <DataGrid Name="gridTasks" SelectionMode="Single">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Task" Binding="{Binding Name}" Width="2*" />
+              <DataGridTextColumn Header="Operation" Binding="{Binding Operation}" Width="130" />
+              <DataGridTextColumn Header="Route" Binding="{Binding Route}" Width="150" />
+              <DataGridTemplateColumn Header="Progress" Width="170">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <Grid Margin="6,0">
+                      <ProgressBar Value="{Binding Percent}" Maximum="100" Height="18" VerticalAlignment="Center" />
+                      <TextBlock Text="{Binding PercentText}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" />
+                    </Grid>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+              <DataGridTextColumn Header="Stage" Binding="{Binding Stage}" Width="3*" />
+              <DataGridTextColumn Header="Elapsed" Binding="{Binding Elapsed}" Width="80" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+      </TabItem>
+
+      <!-- ============================== LOG -->
+      <TabItem Header="Log">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            <Button Name="btnLogOpen" Content="Open Log File" />
+            <Button Name="btnLogClear" Content="Clear View" />
+          </StackPanel>
+          <ListBox Name="listLog" FontFamily="Menlo,Monaco,monospace" FontSize="11" />
+        </DockPanel>
+      </TabItem>
+
+      <!-- ============================== SETTINGS -->
+      <TabItem Header="Settings">
+        <ScrollViewer>
+          <StackPanel MaxWidth="900" HorizontalAlignment="Left" Spacing="14" Margin="8">
+            <TextBlock Classes="h1" Text="Settings" />
+            <TextBlock Text="Library folders" FontWeight="SemiBold" />
+            <ListBox Name="listFolders" Height="150" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <Button Name="btnSettingsAddFolder" Content="Add…" />
+              <Button Name="btnSettingsRemoveFolder" Content="Remove" />
+              <CheckBox Name="chkRecursive" Content="Scan sub-folders" IsChecked="True" />
+            </StackPanel>
+            <Grid Name="gridSettingsPaths" ColumnDefinitions="180,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+              <TextBlock Classes="label" Text="Default debug passcode" />
+              <TextBox Grid.Column="1" Name="txtSettingsPasscode" FontFamily="Menlo,Monaco,monospace"
+                       Watermark="00000000000000000000000000000000" />
+              <TextBlock Grid.Row="1" Classes="label" Text="Workspace (temp) folder" />
+              <TextBox Grid.Row="1" Grid.Column="1" Name="txtSettingsWorkspace" Watermark="System temp folder" />
+              <Button Grid.Row="1" Grid.Column="2" Name="btnSettingsWorkspace" Content="Choose…" />
+            </Grid>
+            <CheckBox Name="chkRevealOutput" Content="Show the output in Finder when a task finishes" />
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Button Name="btnSettingsSave" Content="Save Settings" Classes="accent" />
+              <TextBlock Name="txtSettingsStatus" Classes="muted" VerticalAlignment="Center" />
+            </StackPanel>
+            <TextBlock Classes="muted" FontSize="11" TextWrapping="Wrap" Name="txtAbout" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>
