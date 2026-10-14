@@ -108,8 +108,8 @@ Everything lives in `~/Library/Application Support/AnyPS5Library/`:
 ## Rebuild
 
 ```sh
-git clone --recurse-submodules https://github.com/<you>/<this-repo>.git
-cd <this-repo>
+git clone --recurse-submodules https://github.com/rmzaoo/AnyPS5Library.git
+cd AnyPS5Library
 bash dotnet-install.sh --channel 10.0 --install-dir .dotnet   # first time only
 ./build-app.sh
 ```
